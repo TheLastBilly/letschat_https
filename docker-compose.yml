@@ -1,0 +1,26 @@
+version: '3'
+
+volumes: 
+    lestchat_db:
+
+services:
+    mongo:
+        image: mongo:latest
+        volumes: 
+            - lestchat_db:/data/db
+
+    app:
+        image: sdelements/lets-chat
+        links:
+            - mongo
+    
+    web:
+        image: nginx
+        volumes: 
+            - ./templates:/etc/nginx/templates
+            - ./certs/cert.crt:/certs/cert.crt
+            - ./certs/cert.key:/certs/cert.key
+        links:
+            - app
+        ports: 
+            - "9200:443"
